@@ -1,97 +1,82 @@
-#include <bits/stdc++.h>
-using namespace std;
+class Node{
+    public:
+    Node* links[26];
+    bool flag;
 
-struct Node
-{
-    Node *links[26];
-    bool flag = false;
-
-    // check if refrence trie is present or not
-    bool containKey(char ch)
-    {
-        return (links[ch - 'a'] != NULL);
+    Node(){
+        flag=false;
+        for(int i=0;i<26;i++){
+            links[i]=NULL;
+        }
+        
     }
 
-    // creating refrence trie
-    void put(char ch, Node *node)
-    {
-        links[ch - 'a'] = node;
+    bool containsKey(char ch){
+        return links[ch-'a']!=NULL;
     }
 
-    // to get the refrence trie
-    Node *get(char ch)
-    {
-        return links[ch - 'a'];
+    void put(char ch){
+        links[ch-'a']=new Node();
     }
 
-    // setting flag true at the end of word
-    void setEnd()
-    {
-        flag = true;
+    Node* get(char ch){
+        return links[ch-'a'];
     }
 
-    // checking if the word is completed or not
-    bool isEnd()
-    {
+    void setEnd(){
+        flag=true;
+    }
+
+    bool isEnd(){
         return flag;
     }
+
 };
 
-class Trie
-{
+class Trie {
 private:
-    Node *root;
-
+    Node* root;
 public:
-    Trie()
-    {
-        root = new Node();
+    Trie() {
+        root=new Node();
     }
-
-    void insert(string word)
-    {
-        // initializing dummy node pointing to root initially
-        Node *curr = root;
-        for (int i = 0; i < word.size(); i++)
-        {
-            if (!curr->containKey(word[i]))
-            {
-                curr->put(word[i], new Node());
+    
+    void insert(string word) {
+        // complexity is O(n) where n is length of word
+        int n=word.size();
+        Node* node=root;
+        for(int i=0;i<n;i++){
+            if(!(node->containsKey(word[i]))){
+                node->put(word[i]);
             }
-
-            curr = curr->get(word[i]);
+            node=node->get(word[i]);
         }
-
-        curr->setEnd();
+        node->setEnd();
     }
-
-    bool search(string word)
-    {
-        Node *curr = root;
-        for (int i = 0; i < word.size(); i++)
-        {
-            if (!curr->containKey(word[i]))
-            {
+    
+    bool search(string word) {
+        // complexity is O(n) where n is length of word
+        Node* node=root;
+        int n=word.size();
+        for(int i=0;i<n;i++){
+            if(!node->containsKey(word[i])){
                 return false;
             }
-            curr = curr->get(word[i]);
+            node=node->get(word[i]);
         }
-
-        return curr->isEnd();
+        return node->isEnd();
     }
-
-    bool startsWith(string prefix)
-    {
-        Node *curr = root;
-        for (int i = 0; i < prefix.size(); i++)
-        {
-            if (!curr->containKey(prefix[i]))
-            {
+    
+    bool startsWith(string prefix) {
+        // complexity is O(n) where n is length of word
+        Node* node=root;
+        int n=prefix.size();
+        for(int i=0;i<n;i++){
+            if(!node->containsKey(prefix[i])){
                 return false;
             }
-            curr = curr->get(prefix[i]);
+            node=node->get(prefix[i]);
         }
-
         return true;
     }
 };
